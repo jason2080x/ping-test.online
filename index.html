@@ -35,6 +35,11 @@
                 <img src="/static/img/favicon.svg" alt="logo" style="height: 40px"/>
                 <a class="fs-1 fw-bold text-success text-decoration-none" href="/">PING-TEST.ONLINE</a>
             </div>
+            <label for="mySelect"></label>
+            <select class="form-select" id="mySelect">
+                <option value="https://www.google.com">ping www.google.com</option>
+                <option value="https://www.baidu.com">ping www.baidu.com</option>
+            </select>
             <div class="mt-3 text-center">
                 <button type="button" class="btn btn-success" id="startPingTest">Start Ping Test</button>
             </div>
@@ -74,6 +79,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     $(document).ready(function () {
+        const mySelect = $("#mySelect");
         let start = false;
         const $startPingTest = $('#startPingTest');
         const $output = $('.output');
@@ -161,7 +167,7 @@
                 };
             }
 
-            ping('https://www.google.com/');
+            ping(mySelect.val());
         }
 
         $startPingTest.click(function () {
