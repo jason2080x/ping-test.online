@@ -54,11 +54,11 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td id="min">0</td>
-                    <td id="avg">0</td>
-                    <td id="max">0</td>
-                    <td id="timeout">0</td>
-                    <td id="total">0</td>
+                    <td id="min"></td>
+                    <td id="avg"></td>
+                    <td id="max"></td>
+                    <td id="timeout"></td>
+                    <td id="total"></td>
                 </tr>
                 </tbody>
             </table>
@@ -83,7 +83,7 @@
         const $timeout = $('#timeout');
         const $total = $('#total');
         let totalMs = 0;
-        let min = 4000;
+        let min = 0;
         let avg = 0;
         let max = 0;
         let timeout = 0;
@@ -98,11 +98,18 @@
             $output.animate({
                 scrollTop: $(document).height()
             }, 'fast');
-            $min.text(min + ' ms');
-            avg = Math.floor(totalMs / (total - timeout))
-            $avg.text(avg + ' ms');
-            $max.text(max + ' ms');
-            $timeout.text(timeout);
+            if (min > 0) {
+                $min.text(min + ' ms');
+            }
+            const success = total - timeout
+            if (totalMs > 0 && success > 0) {
+                avg = Math.floor(totalMs / success)
+                $avg.text(avg + ' ms');
+            }
+            if (max > 0) {
+                $max.text(max + ' ms');
+                $timeout.text(timeout);
+            }
             $total.text(total);
         }
 
@@ -165,7 +172,7 @@
             } else {
                 start = false;
                 totalMs = 0;
-                min = 4000;
+                min = 0;
                 avg = 0;
                 max = 0;
                 timeout = 0;
