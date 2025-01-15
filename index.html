@@ -139,7 +139,7 @@
                         const endTime = Date.now();
                         const duration = endTime - startTime;
                         totalMs += duration
-                        if (duration < min) {
+                        if (duration < min || min === 0) {
                             min = duration;
                         }
                         if (duration > max) {
