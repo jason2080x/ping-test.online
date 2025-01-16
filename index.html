@@ -93,7 +93,7 @@
         let avg = 0;
         let max = 0;
         let timeout = 0;
-        let total = 0;
+        let total = -1;
 
         function addCommandLine(str) {
             $output.append('<div class="command">' + str + '</div>');
@@ -123,6 +123,7 @@
             $output.empty();
 
             function ping(url) {
+                total++;
                 if (!start) return;
                 let timeOut = false;
                 const url2 = new URL(url);
@@ -167,7 +168,6 @@
                         }, 1000);
                     }
                 };
-                total++;
             }
 
             ping(mySelect.val());
@@ -185,7 +185,7 @@
                 avg = 0;
                 max = 0;
                 timeout = 0;
-                total = 0;
+                total = -1;
                 $startPingTest.text('Start Ping Test');
             }
         });
