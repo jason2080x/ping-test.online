@@ -143,7 +143,6 @@
                 const url2 = new URL(url);
                 const protocol = url2.protocol;
                 const hostname = url2.hostname;
-                const startTime = Date.now();
                 const img = new Image();
                 let timer = setTimeout(() => {
                     if (firstPing) {
@@ -158,8 +157,10 @@
                     ping(url);
                 }, 4000);
                 img.referrerPolicy = 'no-referrer';
+                const startTime = Date.now();
                 img.src = protocol + '//' + hostname + '/favicon.ico?t=' + startTime;
                 img.onload = () => {
+                    const endTime = Date.now();
                     clearTimeout(timer);
                     if (firstPing) {
                         firstPing = false;
@@ -168,7 +169,6 @@
                         return;
                     }
                     if (!timeOut) {
-                        const endTime = Date.now();
                         const duration = endTime - startTime;
                         totalMs += duration
                         if (duration < min || min === 0) {
