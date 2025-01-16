@@ -198,6 +198,7 @@
         $startPingTest.click(function () {
             if (!start) {
                 start = true;
+                firstPing = true;
                 startPingTest();
                 $startPingTest.text('Stop');
             } else {
