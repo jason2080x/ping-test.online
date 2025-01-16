@@ -81,6 +81,7 @@
     $(document).ready(function () {
         const mySelect = $("#mySelect");
         let start = false;
+        let firstPing = true;
         const $startPingTest = $('#startPingTest');
         const $output = $('.output');
         const $min = $('#min');
@@ -93,9 +94,23 @@
         let avg = 0;
         let max = 0;
         let timeout = 0;
-        let total = -1;
+        let total = 0;
+
+        function init() {
+            totalMs = 0;
+            min = 0;
+            avg = 0;
+            max = 0;
+            timeout = 0;
+            total = 0;
+        }
 
         function addCommandLine(str) {
+            if (firstPing) {
+                firstPing = false;
+                init();
+                return;
+            }
             $output.append('<div class="command">' + str + '</div>');
             const commandElements = $('.command');
             if (commandElements.length > 20) {
@@ -132,7 +147,6 @@
                 const startTime = Date.now();
                 const img = new Image();
                 let timer = setTimeout(() => {
-                    if (total === 0) return;
                     timeOut = true;
                     timeout++;
                     addCommandLine('ping ' + hostname + ' timeout')
@@ -142,7 +156,6 @@
                 img.src = protocol + '//' + hostname + '/favicon.ico?t=' + startTime;
                 img.onload = () => {
                     clearTimeout(timer);
-                    if (total === 0) return;
                     if (!timeOut) {
                         const endTime = Date.now();
                         const duration = endTime - startTime;
@@ -161,7 +174,6 @@
                 };
                 img.onerror = () => {
                     clearTimeout(timer);
-                    if (total === 0) return;
                     if (!timeOut) {
                         setTimeout(() => {
                             ping(url);
@@ -180,12 +192,7 @@
                 $startPingTest.text('Stop');
             } else {
                 start = false;
-                totalMs = 0;
-                min = 0;
-                avg = 0;
-                max = 0;
-                timeout = 0;
-                total = -1;
+                init();
                 $startPingTest.text('Start Ping Test');
             }
         });
