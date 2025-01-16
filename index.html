@@ -137,7 +137,6 @@
             $output.empty();
 
             function ping(url) {
-                total++;
                 if (!start) return;
                 let timeOut = false;
                 const url2 = new URL(url);
@@ -160,6 +159,7 @@
                 const startTime = Date.now();
                 img.src = protocol + '//' + hostname + '/favicon.ico?t=' + startTime;
                 img.onload = () => {
+                    total++;
                     const endTime = Date.now();
                     clearTimeout(timer);
                     if (firstPing) {
