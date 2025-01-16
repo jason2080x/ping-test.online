@@ -124,7 +124,6 @@
 
             function ping(url) {
                 if (!start) return;
-                total++;
                 let timeOut = false;
                 const url2 = new URL(url);
                 const protocol = url2.protocol;
@@ -132,6 +131,7 @@
                 const startTime = Date.now();
                 const img = new Image();
                 let timer = setTimeout(() => {
+                    if (total === 0) return;
                     timeOut = true;
                     timeout++;
                     addCommandLine('ping ' + hostname + ' timeout')
@@ -141,6 +141,7 @@
                 img.src = protocol + '//' + hostname + '/favicon.ico?t=' + startTime;
                 img.onload = () => {
                     clearTimeout(timer);
+                    if (total === 0) return;
                     if (!timeOut) {
                         const endTime = Date.now();
                         const duration = endTime - startTime;
@@ -159,12 +160,14 @@
                 };
                 img.onerror = () => {
                     clearTimeout(timer);
+                    if (total === 0) return;
                     if (!timeOut) {
                         setTimeout(() => {
                             ping(url);
                         }, 1000);
                     }
                 };
+                total++;
             }
 
             ping(mySelect.val());
@@ -189,7 +192,19 @@
     })
 </script>
 <script>
-    !function(p){"use strict";!function(t){var s=window,e=document,i=p,c="".concat("https:"===e.location.protocol?"https://":"http://","sdk.51.la/js-sdk-pro.min.js"),n=e.createElement("script"),r=e.getElementsByTagName("script")[0];n.type="text/javascript",n.setAttribute("charset","UTF-8"),n.async=!0,n.src=c,n.id="LA_COLLECT",i.d=n;var o=function(){s.LA.ids.push(i)};s.LA?s.LA.ids&&o():(s.LA=p,s.LA.ids=[],o()),r.parentNode.insertBefore(n,r)}()}({id:"KhBMejwNorFq7BJ6",ck:"KhBMejwNorFq7BJ6"});
+    !function (p) {
+        "use strict";
+        !function (t) {
+            var s = window, e = document, i = p,
+                c = "".concat("https:" === e.location.protocol ? "https://" : "http://", "sdk.51.la/js-sdk-pro.min.js"),
+                n = e.createElement("script"), r = e.getElementsByTagName("script")[0];
+            n.type = "text/javascript", n.setAttribute("charset", "UTF-8"), n.async = !0, n.src = c, n.id = "LA_COLLECT", i.d = n;
+            var o = function () {
+                s.LA.ids.push(i)
+            };
+            s.LA ? s.LA.ids && o() : (s.LA = p, s.LA.ids = [], o()), r.parentNode.insertBefore(n, r)
+        }()
+    }({id: "KhBMejwNorFq7BJ6", ck: "KhBMejwNorFq7BJ6"});
 </script>
 </body>
 </html>
