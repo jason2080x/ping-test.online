@@ -148,6 +148,7 @@
                 let timer = setTimeout(() => {
                     if (firstPing) {
                         firstPing = false;
+                        init();
                         ping(url);
                         return;
                     }
@@ -162,6 +163,7 @@
                     clearTimeout(timer);
                     if (firstPing) {
                         firstPing = false;
+                        init();
                         ping(url);
                         return;
                     }
@@ -185,6 +187,7 @@
                     clearTimeout(timer);
                     if (firstPing) {
                         firstPing = false;
+                        init();
                         ping(url);
                         return;
                     }
