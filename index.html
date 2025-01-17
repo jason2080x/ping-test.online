@@ -207,11 +207,11 @@
             if (!start) {
                 start = true;
                 firstPing = true;
-                startPingTest();
                 $startPingTest.text('Stop');
+                init();
+                startPingTest();
             } else {
                 start = false;
-                init();
                 $startPingTest.text('Start Ping Test');
             }
         });
