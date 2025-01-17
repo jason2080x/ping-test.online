@@ -55,7 +55,7 @@
                     <th scope="col">avg</th>
                     <th scope="col">max</th>
                     <th scope="col">time out</th>
-                    <th scope="col">total</th>
+                    <th scope="col">success</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -64,7 +64,7 @@
                     <td id="avg"></td>
                     <td id="max"></td>
                     <td id="timeout">0</td>
-                    <td id="total">0</td>
+                    <td id="success">0</td>
                 </tr>
                 </tbody>
             </table>
@@ -92,13 +92,13 @@
         const $avg = $('#avg');
         const $max = $('#max');
         const $timeout = $('#timeout');
-        const $total = $('#total');
+        const $success = $('#success');
         let totalMs = 0;
         let min = 0;
         let avg = 0;
         let max = 0;
         let timeout = 0;
-        let total = 0;
+        let success = 0;
 
         function init() {
             totalMs = 0;
@@ -106,7 +106,7 @@
             avg = 0;
             max = 0;
             timeout = 0;
-            total = 0;
+            success = 0;
         }
 
         function addCommandLine(str) {
@@ -121,7 +121,6 @@
             if (min > 0) {
                 $min.text(min + ' ms');
             }
-            const success = total - timeout
             if (totalMs > 0 && success > 0) {
                 avg = Math.floor(totalMs / success)
                 $avg.text(avg + ' ms');
@@ -130,7 +129,7 @@
                 $max.text(max + ' ms');
             }
             $timeout.text(timeout);
-            $total.text(total);
+            $success.text(success);
         }
 
         function startPingTest() {
@@ -159,7 +158,7 @@
                 const startTime = Date.now();
                 img.src = protocol + '//' + hostname + '/favicon.ico?t=' + startTime;
                 img.onload = () => {
-                    total++;
+                    success++;
                     const endTime = Date.now();
                     clearTimeout(timer);
                     if (firstPing) {
