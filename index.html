@@ -192,6 +192,7 @@
                         return;
                     }
                     if (!timeOut) {
+                        timeout++;
                         addCommandLine('ping ' + hostname + ' timeout')
                         setTimeout(() => {
                             ping(url);
