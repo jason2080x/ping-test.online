@@ -192,7 +192,7 @@
                         return;
                     }
                     if (!timeOut) {
-                        addCommandLine('ping ' + hostname + ' error')
+                        addCommandLine('ping ' + hostname + ' timeout')
                         setTimeout(() => {
                             ping(url);
                         }, 4000);
