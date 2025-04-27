@@ -60,11 +60,11 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td id="min"></td>
-                    <td id="avg"></td>
-                    <td id="max"></td>
-                    <td id="timeout">0</td>
+                    <td id="min">0</td>
+                    <td id="avg">0</td>
+                    <td id="max">0</td>
                     <td id="success">0</td>
+                    <td id="timeout">0</td>
                 </tr>
                 </tbody>
             </table>
@@ -112,6 +112,8 @@
             $min.text(0);
             $avg.text(0);
             $max.text(0);
+            $success.text(0)
+            $timeout.text(0)
         }
 
         function addCommandLine(str) {
