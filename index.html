@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ping Test Online</title>
+    <meta name="description"
+          content="Feel free to use our ping test.Results are close to ICMP ping (via cmd or console).">
+    <link rel="icon" href="/static/img/favicon.svg" sizes="any" type="image/svg+xml"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
+          integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <style>
+        .terminal {
+            background-color: #222;
+            color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .output {
+            overflow-y: scroll;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="d-flex flex-column align-items-center">
+        <div class="w-100" style="max-width: 992px;position:relative;">
+            <div class="d-flex mt-5 justify-content-center align-items-center">
+                <img src="/static/img/favicon.svg" alt="logo" style="height: 40px"/>
+                <a class="fs-1 fw-bold text-success text-decoration-none" href="/">PING-TEST.ONLINE</a>
+            </div>
+            <label for="mySelect"></label>
+            <select class="form-select" id="mySelect">
+                <option value="https://www.google.com">ping www.google.com</option>
+                <option value="https://www.bing.com">ping www.bing.com</option>
+                <option value="https://www.baidu.com">ping www.baidu.com</option>
+            </select>
+            <div class="mt-3 text-center">
+                <button type="button" class="btn btn-success" id="startPingTest">Start Ping Test</button>
+            </div>
+            <div class="terminal mt-3">
+                <div class="output">
+                </div>
+            </div>
+            <table class="table mt-3">
+                <thead>
+                <tr>
+                    <th scope="col">min</th>
+                    <th scope="col">avg</th>
+                    <th scope="col">max</th>
+                    <th scope="col">time out</th>
+                    <th scope="col">success</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="min"></td>
+                    <td id="avg"></td>
+                    <td id="max"></td>
+                    <td id="timeout">0</td>
+                    <td id="success">0</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="my-5">
+            <p class="text-center">Feel free to use our ping test.Results are close to ICMP ping (via cmd or
+                console).</p>
+            <p class="text-center">© PING-TEST.ONLINE</p>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(document).ready(function () {
+        const mySelect = $("#mySelect");
+        const $startPingTest = $('#startPingTest');
+        const $output = $('.output');
+        const $min = $('#min');
+        const $avg = $('#avg');
+        const $max = $('#max');
+        const $timeout = $('#timeout');
+        const $success = $('#success');
+        let totalMs = 0;
+        let min = 0;
+        let avg = 0;
+        let max = 0;
+        let timeout = 0;
+        let success = 0;
+        let start = false;
+        let firstPing = true;
+        let protocol = null
+        let hostname = null
+        let new_url = null
+
+        function init() {
+            totalMs = 0;
+            min = 0;
+            avg = 0;
+            max = 0;
+            timeout = 0;
+            success = 0;
+            firstPing = true
+            $min.text(0);
+            $avg.text(0);
+            $max.text(0);
+        }
+
+        function addCommandLine(str) {
+            $output.append('<div class="command">' + str + '</div>');
+            const commandElements = $('.command');
+            if (commandElements.length > 20) {
+                commandElements.first().remove();
+            }
+            $output.animate({
+                scrollTop: $(document).height()
+            }, 'fast');
+            if (min > 0) {
+                $min.text(min + ' ms');
+            }
+            if (totalMs > 0 && success > 0) {
+                avg = Math.floor(totalMs / success)
+                $avg.text(avg + ' ms');
+            }
+            if (max > 0) {
+                $max.text(max + ' ms');
+            }
+            $timeout.text(timeout);
+            $success.text(success);
+        }
+
+        function simulateFaviconPingWithTimeout(url, callback, timeoutInMs = 4000) {
+            if (!start || url !== new_url) return
+            let url2 = new URL(url);
+            protocol = url2.protocol;
+            hostname = url2.hostname;
+            const img = new Image();
+            const startTime = performance.now();
+            let finished = false;
+            const imageUrl = `${url}/favicon.ico?t=${Date.now()}`;
+            let timeoutId;
+            const handleCompletion = (success, errorEvent) => {
+                if (finished) {
+                    return;
+                }
+                finished = true;
+                clearTimeout(timeoutId);
+                const duration = performance.now() - startTime;
+                callback({success: success, duration: duration, error: errorEvent, url: url});
+                img.onload = null;
+                img.onerror = null;
+            };
+            img.onload = function () {
+                handleCompletion(true); // 成功
+            };
+            img.onerror = function (errorEvent) {
+                handleCompletion(false, errorEvent); // 失败
+            };
+            setTimeout(() => {
+                if (url !== new_url) return;
+                if (finished) {
+                    return;
+                }
+                finished = true;
+                callback({success: false, duration: timeoutInMs, error: 'Timeout', url: url});
+                img.onload = null;
+                img.onerror = null;
+            }, timeoutInMs);
+            img.src = imageUrl;
+        }
+
+        function callback(result) {
+            if (!start || result.url !== new_url) return
+            if (result.success) {
+                if (!firstPing) {
+                    let duration = Math.trunc(result.duration)
+                    totalMs += duration
+                    if (duration < min || min === 0) {
+                        min = duration;
+                    }
+                    if (duration > max) {
+                        max = duration;
+                    }
+                    success += 1
+                    addCommandLine('ping ' + hostname + ' ' + duration + ' ms')
+                }
+                // console.log(`Ping successful: ${Math.round(result.duration)} ms`);
+            } else {
+                timeout += 1
+                addCommandLine('ping ' + hostname + ' timeout')
+            }
+            setTimeout(function () {
+                firstPing = false
+                simulateFaviconPingWithTimeout(result.url, callback, 4000);
+            }, 1000);
+        }
+
+        $startPingTest.click(function () {
+            if (!start) {
+                start = true;
+                firstPing = true;
+                $startPingTest.text('Stop');
+                $output.empty();
+                new_url = mySelect.val()
+                init();
+                simulateFaviconPingWithTimeout(new_url, callback, 4000);
+            } else {
+                start = false;
+                $startPingTest.text('Start Ping Test');
+            }
+        });
+    })
+</script>
+
+</body>
+</html>
